@@ -1,6 +1,5 @@
 # If we have a partially complete siteswap, how can we fill in the gaps?
 # Note, I will use "?" to denote a gap in the pattern
-import siteswap_states
 
 def valid_so_far(partial_siteswap):
     """ Takes a list of numbers and question markes as input.
