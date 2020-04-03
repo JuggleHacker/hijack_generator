@@ -46,7 +46,8 @@ def find_network_of_hijacks(starting_pattern, permitted_throws, write_to_workboo
                     current_value = ws1.cell(column=siteswap_in_list(patterns,transition[1])+2, row=siteswap_in_list(patterns,transition[0])+2).value
 
                     if current_value != None:
-                        _ = ws1.cell(column=siteswap_in_list(patterns,transition[1])+2, row=siteswap_in_list(patterns,transition[0])+2, value="{0}".format(current_value + '\nor\n' + transition[2]))
+                        if transition[2] not in current_value:
+                            _ = ws1.cell(column=siteswap_in_list(patterns,transition[1])+2, row=siteswap_in_list(patterns,transition[0])+2, value="{0}".format(current_value + '\nor\n' + transition[2]))
                     else:
                         _ = ws1.cell(column=siteswap_in_list(patterns,transition[1])+2, row=siteswap_in_list(patterns,transition[0])+2, value="{0}".format(transition[2]))
         if newer_patterns == []:
@@ -66,7 +67,7 @@ def find_network_of_hijacks(starting_pattern, permitted_throws, write_to_workboo
                 for j in range(2,len(patterns)+2):
                     _ = adjacency_matrix_sheet.cell(column=i,row=j, value = '=IF(Transitions!{}="",0,1)'.format(get_column_letter(i)+str(j)))
             wb.save(filename = dest_filename)
-            print("{} patterns written".format(transitions_found))
+            #print("{} patterns written".format(transitions_found))
 
         else:
             print('No luck, Chuck.')
