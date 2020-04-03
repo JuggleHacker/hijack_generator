@@ -2,19 +2,18 @@
 import complete_the_siteswap
 import siteswap_states
 
-def find_transitions(start_pattern, target_pattern, permitted_throws):
-    """ Write target_pattern with the new or missing pass at index 0"""
-    # print(start_pattern)
-    # print(target_pattern)
+def find_transitions(start_pattern, target_pattern, permitted_transition_throws=[2,4,6,8]):
+    """ Finds transitions between a start pattern and an end pattern."""
+
     active_throws = str(start_pattern[0::2])+'*'+str(target_pattern[0::2])
     passive_throws = str(start_pattern[1::2])+str(target_pattern[1::2])
     if siteswap_states.state(target_pattern) == siteswap_states.state(start_pattern):
         return [start_pattern, target_pattern, 'Active '+active_throws.replace('*','')+'\n'+'Passive '+passive_throws]
-    elif target_pattern[0] != 7: # trying to do a self which doesn't fit
+    elif target_pattern[0] % 2 == 0: # trying to do a self which doesn't fit
         target_pattern = target_pattern[1:] + [target_pattern[0]]
         target_state = siteswap_states.state(target_pattern)
         state_before_transition_throw = siteswap_states.state(start_pattern)
-        for throw in [2,4,6,8]:
+        for throw in permitted_transition_throws:
 
             new_state = siteswap_states.make_a_throw(throw, state_before_transition_throw)
             if new_state == target_state:
@@ -35,7 +34,7 @@ def find_transitions(start_pattern, target_pattern, permitted_throws):
         target_state = siteswap_states.state(target_pattern)
         state_before_transition_throw = siteswap_states.state(start_pattern)
 
-        for throw in [2,4,6,8]:
+        for throw in permitted_transition_throws:
 
             new_state = siteswap_states.make_a_throw(throw, state_before_transition_throw)
             if new_state == target_state:
@@ -43,7 +42,7 @@ def find_transitions(start_pattern, target_pattern, permitted_throws):
                 passive_throws = str(start_pattern[1::2])+str(target_pattern[0::2])
                 return [start_pattern, target_pattern,'Active '+active_throws.replace('*',str(throw))+'\n'+'Passive '+passive_throws]
                 # I claim there can be at most one transition throw, so can stop looking once one is found.
-        print("No transition found from {} to {}".format(start_pattern,target_pattern))
+        #print("No transition found from {} to {}".format(start_pattern,target_pattern))
 
 def do_not_throw_pass(raw_siteswap,index, permitted_throws):
 
@@ -63,8 +62,6 @@ def do_not_throw_pass(raw_siteswap,index, permitted_throws):
     else: # siteswap[0] == 7 and still have passes after removing it
         siteswap[0] = '?'
         siteswap[5%len(siteswap)] = 2
-
-
 
     for time, throw in enumerate(siteswap):
         if throw != '?' and time % 2 == 0 and throw % 2 == 0:
@@ -108,7 +105,6 @@ def throw_extra_pass(raw_siteswap,index, permitted_throws):
 
 def generate_hijacks(siteswap, permitted_throws):
     hijacks_found = []
-    # TODO: Why does the period have to be 5 locally when the hijack pass is a 7? Does it?!
     if len(siteswap)%2 == 1:
         siteswap *= 2
     #print(siteswap)

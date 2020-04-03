@@ -2,6 +2,60 @@ import unittest
 import programming
 
 
+class FindTransitionsTests(unittest.TestCase):
+
+    def test_no_transition_throws_needed_not_throwing_a_pass(self):
+        start_pattern = [7,8,6,2,7,7,8,6,2,7]
+        target_pattern = [7,8,6,2,6,7,8,6,8,2]
+        permitted_transition_throws = []
+        output = programming.find_transitions(
+        start_pattern, target_pattern, permitted_transition_throws
+        )
+        answer = [
+        [7, 8, 6, 2, 7, 7, 8, 6, 2, 7], [7, 8, 6, 2, 6, 7, 8, 6, 8, 2],
+        'Active [7, 6, 7, 8, 2][7, 6, 6, 8, 8]\nPassive [8, 2, 7, 6, 7][8, 2, 7, 6, 2]'
+        ]
+        self.assertEqual(output, answer)
+
+    def test_no_transition_throws_needed_throwing_an_extra_pass(self):
+        start_pattern = [7,8,6,2,6,7,8,6,8,2]
+        target_pattern = [7,8,6,2,7,7,8,6,2,7]
+        permitted_transition_throws = []
+        output = programming.find_transitions(
+        start_pattern, target_pattern, permitted_transition_throws
+        )
+        answer = [
+        [7, 8, 6, 2, 6, 7, 8, 6, 8, 2], [7, 8, 6, 2, 7, 7, 8, 6, 2, 7],
+        'Active [7, 6, 6, 8, 8][7, 6, 7, 8, 2]\nPassive [8, 2, 7, 6, 2][8, 2, 7, 6, 7]'
+        ]
+        self.assertEqual(output, answer)
+
+    def test_transition_throw_needed_but_not_available(self):
+        start_pattern = [2,7,7,8,6,2,7,7,8,6] # 6 club why-not
+        target_pattern = [7,7,7,8,2,7,7,7,2,6] # parsnip vs funky bookends
+        permitted_transition_throws = [2,6,8] # need a 4 to transition
+        output = programming.find_transitions(
+        start_pattern, target_pattern, permitted_transition_throws
+        )
+        answer = None
+        self.assertEqual(output, answer)
+
+    def test_transition_throw_needed(self):
+        start_pattern = [2,7,7,8,6,2,7,7,8,6] # 6 club why-not
+        target_pattern = [7,7,7,8,2,7,7,7,2,6] # parsnip vs funky bookends
+        permitted_transition_throws = [4]
+        output = programming.find_transitions(
+        start_pattern, target_pattern, permitted_transition_throws
+        )
+        answer = [
+        [8, 6, 2, 7, 7, 8, 6, 2, 7, 7], [6, 7, 7, 7, 8, 2, 7, 7, 7, 2],
+        'Active [8, 2, 7, 6, 7]4[7, 7, 2, 7, 2]\nPassive [6, 7, 8, 2, 7][6, 7, 8, 7, 7]'
+        ]
+        self.assertEqual(output, answer)
+
+
+
+
 class FindingHijackTests(unittest.TestCase):
 
     def test_find_transitions_from_martins_one_count(self):
