@@ -4,7 +4,10 @@ import siteswap_states
 
 def find_transitions(start_pattern, target_pattern, permitted_transition_throws=[2,4,6,8]):
     """ Finds transitions between a start pattern and an end pattern."""
-
+    # make sure start_pattern and target_pattern are written as even periods
+    for pattern in [start_pattern, target_pattern]:
+        if len(pattern)%2 == 1:
+            pattern *= 2
     active_throws = str(start_pattern[0::2])+'*'+str(target_pattern[0::2])
     passive_throws = str(start_pattern[1::2])+str(target_pattern[1::2])
     if siteswap_states.state(target_pattern) == siteswap_states.state(start_pattern):
@@ -52,16 +55,17 @@ def do_not_throw_pass(raw_siteswap,index, permitted_throws):
     number_of_objects = sum(siteswap)/len(siteswap)
     # print(siteswap)
 
-    if siteswap[0] != 7:
+    if siteswap[0]%2 != 1:
         print("There's no pass there not to throw!")
         return None
 
     elif len([throw for throw in raw_siteswap if throw %2 == 1])<=2:
         #All selfs, not an interesting pattern
         return []
-    else: # siteswap[0] == 7 and still have passes after removing it
+    else: # first throw is a pass and still have passes after removing it
+        siteswap[(siteswap[0]-2)%len(siteswap)] = 2
         siteswap[0] = '?'
-        siteswap[5%len(siteswap)] = 2
+
 
     for time, throw in enumerate(siteswap):
         if throw != '?' and time % 2 == 0 and throw % 2 == 0:
@@ -80,6 +84,8 @@ def do_not_throw_pass(raw_siteswap,index, permitted_throws):
 
 
 def throw_extra_pass(raw_siteswap,index, permitted_throws):
+    if len(raw_siteswap)%2 == 1:
+        raw_siteswap *= 2
     siteswap = raw_siteswap.copy()
     siteswap = siteswap[index:]+siteswap[:index] # rotate so extra pass is at front
     patterns_found = []
@@ -90,9 +96,10 @@ def throw_extra_pass(raw_siteswap,index, permitted_throws):
     for time, throw in enumerate(siteswap):
         if time % 2 == 0 and throw % 2 == 0:
             siteswap[time] = '?'
-    siteswap[0] = 7
+    hijacking_pass = len(raw_siteswap)//2 + 2
+    siteswap[0] = hijacking_pass
     # TODO: does this give weird results?
-    siteswap[5%len(siteswap)] = 7
+    siteswap[(hijacking_pass-2)%len(siteswap)] = hijacking_pass
 
     permitted_self_throws = [throw for throw in permitted_throws if throw%2 == 0] # This is to rule out adding in extra passes over the transition
     solutions = complete_the_siteswap.complete(siteswap,permitted_self_throws,number_of_objects)
@@ -108,13 +115,14 @@ def generate_hijacks(siteswap, permitted_throws):
     if len(siteswap)%2 == 1:
         siteswap *= 2
     #print(siteswap)
+    hijacking_pass = len(siteswap)//2 + 2
     for index, throw in enumerate(siteswap):
         #print('----------')
-        if index % 2 == 0 and throw == 7:
+        if index % 2 == 0 and throw == hijacking_pass:
             # print('Calling do_not_throw_pass({}, {}, {})'.format(siteswap,index,permitted_throws))
             hijacks_found +=  do_not_throw_pass(siteswap, index, permitted_throws)
         elif index % 2 == 1 and throw == 2:
-            extra_pass_index = (index - 5) % len(siteswap)
+            extra_pass_index = (index - hijacking_pass + 2) % len(siteswap)
             # print('Calling throw_extra_pass({}, {}, {})'.format(siteswap,extra_pass_index,permitted_throws))
             hijacks_found += throw_extra_pass(siteswap, extra_pass_index, permitted_throws)
     return hijacks_found
