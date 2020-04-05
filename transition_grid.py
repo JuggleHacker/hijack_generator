@@ -13,7 +13,7 @@ def siteswap_in_list(list_of_siteswaps, siteswap):
             siteswap = siteswap[1:] + siteswap[:1]
     return None
 
-def find_network_of_hijacks(starting_pattern, permitted_throws, response_pass=None, write_to_workbook=False, workbook_name=''):
+def find_network_of_hijacks(starting_pattern, permitted_throws, extra_pass=None, response_pass=None, write_to_workbook=False, workbook_name=''):
 
     transitions_found = 0
     patterns = [starting_pattern] # keep track of all patterns found
@@ -30,8 +30,8 @@ def find_network_of_hijacks(starting_pattern, permitted_throws, response_pass=No
     while keep_looping:
         newer_patterns = []
         for pattern in new_patterns:
-            hijack = programming.generate_hijacks(pattern, permitted_throws,response_pass)
-            hijack +=  programming.generate_hijacks(pattern[1:]+pattern[:1], permitted_throws,response_pass)
+            hijack = programming.generate_hijacks(pattern, permitted_throws,extra_pass,response_pass)
+            hijack +=  programming.generate_hijacks(pattern[1:]+pattern[:1], permitted_throws,extra_pass,response_pass)
             for transition in hijack:
 
                 if transition == None:
@@ -71,6 +71,6 @@ def find_network_of_hijacks(starting_pattern, permitted_throws, response_pass=No
 
         else:
             print('No luck, Chuck.')
-            
+
 
     return transitions_found
