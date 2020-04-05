@@ -89,7 +89,7 @@ def do_not_throw_pass(raw_siteswap,index, permitted_throws):
 
 
 
-def throw_extra_pass(raw_siteswap,index, permitted_throws):
+def throw_extra_pass(raw_siteswap,index, permitted_throws,response_pass=None):
     if len(raw_siteswap)%2 == 1:
         raw_siteswap *= 2
     siteswap = raw_siteswap.copy()
@@ -105,7 +105,9 @@ def throw_extra_pass(raw_siteswap,index, permitted_throws):
     hijacking_pass = len(raw_siteswap)//2 + 2
     siteswap[0] = hijacking_pass
     # TODO: does this give weird results?
-    siteswap[(hijacking_pass-2)%len(siteswap)] = hijacking_pass
+    if response_pass == None:
+        response_pass = len(raw_siteswap)//2 + 2
+    siteswap[(hijacking_pass-2)%len(siteswap)] = response_pass
 
     permitted_self_throws = [throw for throw in permitted_throws if throw%2 == 0] # This is to rule out adding in extra passes over the transition
     solutions = complete_the_siteswap.complete(siteswap,permitted_self_throws,number_of_objects)
@@ -116,7 +118,7 @@ def throw_extra_pass(raw_siteswap,index, permitted_throws):
         patterns_found.append(find_transitions(raw_siteswap,pattern,[2,4,6,8]))
     return patterns_found
 
-def generate_hijacks(siteswap, permitted_throws):
+def generate_hijacks(siteswap, permitted_throws,response_pass=None):
     hijacks_found = []
     if len(siteswap)%2 == 1:
         siteswap *= 2
@@ -130,5 +132,7 @@ def generate_hijacks(siteswap, permitted_throws):
         elif index % 2 == 1 and throw == 2:
             extra_pass_index = (index - hijacking_pass + 2) % len(siteswap)
             # print('Calling throw_extra_pass({}, {}, {})'.format(siteswap,extra_pass_index,permitted_throws))
-            hijacks_found += throw_extra_pass(siteswap, extra_pass_index, permitted_throws)
+            hijacks_found += throw_extra_pass(
+            siteswap, extra_pass_index, permitted_throws, response_pass
+            )
     return hijacks_found

@@ -17,7 +17,7 @@ class TransitionGridTests(unittest.TestCase):
         start_pattern = [7,8,6,2,7]
         permitted_throws = [2,6,7,8]
         transitions_found = transition_grid.find_network_of_hijacks(
-        start_pattern,permitted_throws,
+        start_pattern,permitted_throws
         )
         self.assertEqual(transitions_found, 45)
         # note that this test may need to be changed if I fix the fact that's it's writting the same transition multiple times.
