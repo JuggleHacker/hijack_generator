@@ -1,8 +1,35 @@
 import unittest
 import programming
 
+class FindTransitionsPeriod3sTests(unittest.TestCase):
 
-class FindTransitionsPeriod7sTests(unittest.TestCase):
+    def test_no_transition_throws_needed_not_throwing_a_pass(self):
+        start_pattern = [9,7,5] # holy grail
+        permitted_throws = [2,5,7,8,9]
+        output = programming.generate_hijacks(
+        start_pattern, permitted_throws
+        )
+        answer = [[
+        [5,9,7,5,9,7], [8,9,7,2,9,7],
+        'Active [5, 7, 9][8, 7, 9]\nPassive [9, 5, 7][9, 2, 7]'
+        ]]
+        self.assertEqual(output, answer)
+
+    def test_no_transition_throws_needed_throwing_an_extra_pass(self):
+        start_pattern = [8,5,5,2,5,5] # holy grail
+        permitted_throws = [2,5,8]
+        output = programming.throw_extra_pass(
+        start_pattern, 0, permitted_throws
+        )
+        answer = [[
+        [8,5,5,2,5,5],[5,5,5,5,5,5],
+        'Active [8, 5, 5][5, 5, 5]\nPassive [5, 2, 5][5, 5, 5]'
+        ]]
+        self.assertEqual(output, answer)
+
+
+
+class FindTransitionsPeriod5sTests(unittest.TestCase):
 
     def test_no_transition_throws_needed_not_throwing_a_pass(self):
         start_pattern = [7,8,6,2,7] # 6 club whynot
@@ -53,7 +80,7 @@ class FindTransitionsPeriod7sTests(unittest.TestCase):
         ]
         self.assertEqual(output, answer)
 
-class FindTransitionsPeriod9sTests(unittest.TestCase):
+class FindTransitionsPeriod7sTests(unittest.TestCase):
 
     def test_flip_needed_to_transition(self):
         # 9788827 TO 9797226 VS 9797888
