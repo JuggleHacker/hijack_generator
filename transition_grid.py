@@ -71,6 +71,6 @@ def find_network_of_hijacks(starting_pattern, permitted_throws, response_pass=No
 
         else:
             print('No luck, Chuck.')
-            Workbook.close()
+            
 
     return transitions_found
