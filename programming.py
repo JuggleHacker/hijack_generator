@@ -8,11 +8,17 @@ def find_transitions(start_pattern, target_pattern, permitted_transition_throws=
     for pattern in [start_pattern, target_pattern]:
         if len(pattern)%2 == 1:
             pattern *= 2
-    active_throws = str(start_pattern[0::2])+'*'+str(target_pattern[0::2])
-    passive_throws = str(start_pattern[1::2])+str(target_pattern[1::2])
-    if siteswap_states.state(target_pattern) == siteswap_states.state(start_pattern):
-        return [start_pattern, target_pattern, 'Active '+active_throws.replace('*','')+'\n'+'Passive '+passive_throws]
-    elif target_pattern[0] % 2 == 0: # trying to do a self which doesn't fit
+
+    for i in range(len(start_pattern)//2):
+        active_throws = str(start_pattern[0::2])+'*'+str(target_pattern[0::2])
+        passive_throws = str(start_pattern[1::2])+str(target_pattern[1::2])
+        if siteswap_states.state(target_pattern) == siteswap_states.state(start_pattern):
+            return [start_pattern, target_pattern, 'Active '+active_throws.replace('*','')+'\n'+'Passive '+passive_throws]
+        else:
+            start_pattern = start_pattern[2:]+start_pattern[:2]
+            target_pattern = target_pattern[2:]+target_pattern[:2]
+    # if nothing has been returned, we need transition throws
+    if target_pattern[0] % 2 == 0: # trying to do a self which doesn't fit
         target_pattern = target_pattern[1:] + [target_pattern[0]]
         target_state = siteswap_states.state(target_pattern)
         state_before_transition_throw = siteswap_states.state(start_pattern)
