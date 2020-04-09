@@ -27,7 +27,7 @@ def ways_to_complete(partial_siteswap, list_of_throws, number_of_objects, soluti
     elif '?' not in partial_siteswap:
         if number_of_objects == None:
             solutions.append(partial_siteswap)
-        elif sum(partial_siteswap)/len(partial_siteswap) == number_of_objects:
+        elif int(sum(partial_siteswap)/len(partial_siteswap)) == number_of_objects:
             solutions.append(partial_siteswap)
 
     else:
